@@ -107,14 +107,6 @@
 #define PRINTF_SUPPORT_LONG_LONG 1
 #endif
 
-#if PRINTF_SUPPORT_LONG_LONG
-typedef unsigned long long printf_unsigned_value_t;
-typedef long long          printf_signed_value_t;
-#else
-typedef unsigned long printf_unsigned_value_t;
-typedef long          printf_signed_value_t;
-#endif
-
 #define PRINTF_PREFER_DECIMAL     false
 #define PRINTF_PREFER_EXPONENTIAL true
 
@@ -145,6 +137,14 @@ typedef long          printf_signed_value_t;
 #define BASE_OCTAL     8
 #define BASE_DECIMAL  10
 #define BASE_HEX      16
+
+#if PRINTF_SUPPORT_LONG_LONG
+typedef unsigned long long printf_unsigned_value_t;
+typedef long long          printf_signed_value_t;
+#else
+typedef unsigned long printf_unsigned_value_t;
+typedef long          printf_signed_value_t;
+#endif
 
 typedef uint8_t numeric_base_t;
 
