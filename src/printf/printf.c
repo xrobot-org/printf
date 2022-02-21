@@ -49,10 +49,6 @@ extern "C" {
 
 // Define this globally (e.g. gcc -DPRINTF_INCLUDE_CONFIG_H ...) to include the
 // printf_config.h header file
-#ifndef PRINTF_INCLUDE_CONFIG_H
-#define PRINTF_INCLUDE_CONFIG_H 0
-#endif
-
 #if PRINTF_INCLUDE_CONFIG_H
 #include "printf_config.h"
 #endif
