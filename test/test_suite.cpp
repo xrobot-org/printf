@@ -761,6 +761,7 @@ TEST_CASE("length - non-standard format", "[]" ) {
 #endif
 
 
+#if PRINTF_SUPPORT_DECIMAL_SPECIFIERS || PRINTF_SUPPORT_EXPONENTIAL_SPECIFIERS
 TEST_CASE("float", "[]" ) {
   char buffer[100];
 
@@ -916,6 +917,7 @@ TEST_CASE("float", "[]" ) {
 #endif
 #endif
 }
+#endif // PRINTF_SUPPORT_DECIMAL_SPECIFIERS || PRINTF_SUPPORT_EXPONENTIAL_SPECIFIERS
 
 
 TEST_CASE("types", "[]" ) {
