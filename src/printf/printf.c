@@ -74,10 +74,11 @@ extern "C" {
 #define PRINTF_INTEGER_BUFFER_SIZE    32
 #endif
 
-// 'ftoa' conversion buffer size, this must be big enough to hold one converted
-// float number including padded zeros (dynamically created on stack)
-#ifndef PRINTF_FTOA_BUFFER_SIZE
-#define PRINTF_FTOA_BUFFER_SIZE    32
+// size of the fixed (on-stack) buffer for printing individual decimal numbers.
+// this must be big enough to hold one converted floating-point value including
+// padded zeros.
+#ifndef PRINTF_DECIMAL_BUFFER_SIZE
+#define PRINTF_DECIMAL_BUFFER_SIZE    32
 #endif
 
 // Support for the decimal notation floating point conversion specifiers (%f, %F)
@@ -716,7 +717,7 @@ static void print_broken_up_decimal(
     }
 
     if (number_.fractional > 0 || !(flags & FLAGS_ADAPT_EXP) || (flags & FLAGS_HASH) ) {
-      while (len < PRINTF_FTOA_BUFFER_SIZE) {
+      while (len < PRINTF_DECIMAL_BUFFER_SIZE) {
         --count;
         buf[len++] = (char)('0' + number_.fractional % 10U);
         if (!(number_.fractional /= 10U)) {
@@ -724,24 +725,24 @@ static void print_broken_up_decimal(
         }
       }
       // add extra 0s
-      while ((len < PRINTF_FTOA_BUFFER_SIZE) && (count > 0U)) {
+      while ((len < PRINTF_DECIMAL_BUFFER_SIZE) && (count > 0U)) {
         buf[len++] = '0';
         --count;
       }
-      if (len < PRINTF_FTOA_BUFFER_SIZE) {
+      if (len < PRINTF_DECIMAL_BUFFER_SIZE) {
         buf[len++] = '.';
       }
     }
   }
   else {
-    if ((flags & FLAGS_HASH) && (len < PRINTF_FTOA_BUFFER_SIZE)) {
+    if ((flags & FLAGS_HASH) && (len < PRINTF_DECIMAL_BUFFER_SIZE)) {
       buf[len++] = '.';
     }
   }
 
   // Write the integer part of the number (it comes after the fractional
   // since the character order is reversed)
-  while (len < PRINTF_FTOA_BUFFER_SIZE) {
+  while (len < PRINTF_DECIMAL_BUFFER_SIZE) {
     buf[len++] = (char)('0' + (number_.integral % 10));
     if (!(number_.integral /= 10)) {
       break;
@@ -753,12 +754,12 @@ static void print_broken_up_decimal(
     if (width && (number_.is_negative || (flags & (FLAGS_PLUS | FLAGS_SPACE)))) {
       width--;
     }
-    while ((len < width) && (len < PRINTF_FTOA_BUFFER_SIZE)) {
+    while ((len < width) && (len < PRINTF_DECIMAL_BUFFER_SIZE)) {
       buf[len++] = '0';
     }
   }
 
-  if (len < PRINTF_FTOA_BUFFER_SIZE) {
+  if (len < PRINTF_DECIMAL_BUFFER_SIZE) {
     if (number_.is_negative) {
       buf[len++] = '-';
     }
@@ -960,7 +961,7 @@ static void print_exponential_number(output_gadget_t* output, double number, pri
 
 static void print_floating_point(output_gadget_t* output, double value, printf_size_t precision, printf_size_t width, printf_flags_t flags, bool prefer_exponential)
 {
-  char buf[PRINTF_FTOA_BUFFER_SIZE];
+  char buf[PRINTF_DECIMAL_BUFFER_SIZE];
   printf_size_t len = 0U;
 
   // test for special values
@@ -994,7 +995,7 @@ static void print_floating_point(output_gadget_t* output, double value, printf_s
   }
 
   // limit precision so that our integer holding the fractional part does not overflow
-  while ((len < PRINTF_FTOA_BUFFER_SIZE) && (precision > PRINTF_MAX_SUPPORTED_PRECISION)) {
+  while ((len < PRINTF_DECIMAL_BUFFER_SIZE) && (precision > PRINTF_MAX_SUPPORTED_PRECISION)) {
     buf[len++] = '0'; // This respects the precision in terms of result length only
     precision--;
   }
