@@ -485,10 +485,10 @@ static void print_integer_finalization(output_gadget_t* output, char* buf, print
       // Let's take back some padding digits to fit in what will eventually
       // be the format-specific prefix
       if (unpadded_len < len) {
-        len--;
+        len--; // This should suffice for BASE_OCTAL
       }
-      if (len && (base == BASE_HEX) && (unpadded_len < len)) {
-        len--;
+      if (len && (base == BASE_HEX || base == BASE_BINARY) && (unpadded_len < len)) {
+        len--; // ... and an extra one for 0x or 0b
       }
     }
     if ((base == BASE_HEX) && !(flags & FLAGS_UPPERCASE) && (len < PRINTF_INTEGER_BUFFER_SIZE)) {

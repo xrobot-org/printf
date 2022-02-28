@@ -190,7 +190,11 @@ PRINTF_TEST_CASE(sharp_flag)
 PRINTF_TEST_CASE(sharp_flag__non_standard_format)
 {
   char buffer[base_buffer_size];
-  PRINTING_CHECK("0b110",                ==, sprintf_, buffer, "%#b", 6);
+  PRINTING_CHECK("0b110",                ==, sprintf_, buffer, "%#b",    6);
+  PRINTING_CHECK("0b11111111",           ==, sprintf_, buffer, "%#010b", 0xff);
+  PRINTING_CHECK("0b011111111",          ==, sprintf_, buffer, "%#011b", 0xff);
+  PRINTING_CHECK("077",                  ==, sprintf_, buffer, "%#03o",  077);
+  PRINTING_CHECK("0077",                 ==, sprintf_, buffer, "%#04o",  077);
 }
 
 #endif
