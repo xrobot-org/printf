@@ -53,7 +53,7 @@ extern "C" {
 __attribute__((format(__printf__, (one_based_format_index), (first_arg))))
 # define ATTR_VPRINTF(one_based_format_index) ATTR_PRINTF((one_based_format_index), 0)
 #else
-# define ATTR_PRINTF((one_based_format_index), (first_arg))
+# define ATTR_PRINTF(one_based_format_index, first_arg)
 # define ATTR_VPRINTF(one_based_format_index)
 #endif
 
