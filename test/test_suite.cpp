@@ -64,6 +64,16 @@ do {                                                      \
   printer_(__VA_ARGS__);                                  \
 } while(0)
 
+#define CAPTURE_AND_PRINT_WITH_RETVAL(retval, printer_, ...) \
+do {                                                      \
+  INFO( #printer_  <<                                     \
+     " arguments (ignore the equations; interpret \"expr" \
+     "\" := expr\" as just \"expr\"): ");                 \
+  CAPTURE( __VA_ARGS__);                                  \
+  retval = printer_(__VA_ARGS__);                         \
+} while(0)
+
+
 #define PRINTING_CHECK_WITH_BUF_SIZE(expected_, dummy, printer_, buffer_, buffer_size, ...) \
 do {                                                             \
   INFO( #printer_ << " arguments, replicated ( \"arg := arg\" "  \

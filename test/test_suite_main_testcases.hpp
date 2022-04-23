@@ -902,11 +902,10 @@ PRINTF_TEST_CASE(pointer)
     CHECK(!strcmp(buffer, "0x0000000012345678-0x000000007edcba98"));
   }
 
+  CAPTURE_AND_PRINT(sprintf_, buffer, "%p", (void *) (uintptr_t) 0xFFFFFFFFU);
   if (sizeof(uintptr_t) == sizeof(uint64_t)) {
-    sprintf_(buffer, "%p", (void *) (uintptr_t) 0xFFFFFFFFU);
     CHECK(!strcmp(buffer, "0x00000000ffffffff"));
   } else {
-    sprintf_(buffer, "%p", (void *) (uintptr_t) 0xFFFFFFFFU);
     CHECK(!strcmp(buffer, "0xffffffff"));
   }
   PRINTING_CHECK("(nil)", ==, sprintf_, buffer, "%p", (const void *) NULL);
@@ -959,24 +958,24 @@ PRINTF_TEST_CASE(buffer_length)
   char buffer[base_buffer_size];
   int ret;
 
-  ret = snprintf_(nullptr, 10, "%s", "Test");
+  CAPTURE_AND_PRINT_WITH_RETVAL(ret, snprintf_, nullptr, 10, "%s", mkstr("Test"));
   CHECK(ret == 4);
-  ret = snprintf_(nullptr, 0, "%s", "Test");
+  CAPTURE_AND_PRINT_WITH_RETVAL(ret, snprintf_, nullptr, (size_t) 0, "%s", mkstr("Test"));
   CHECK(ret == 4);
 
   buffer[0] = (char) 0xA5;
-  ret = snprintf_(buffer, 0, "%s", "Test");
+  CAPTURE_AND_PRINT_WITH_RETVAL(ret, snprintf_, buffer, (size_t) 0, "%s", mkstr("Test"));
   CHECK(buffer[0] == (char) 0xA5);
   CHECK(ret == 4);
 
   buffer[0] = (char) 0xCC;
-  snprintf_(buffer, 1, "%s", "Test");
+  CAPTURE_AND_PRINT_WITH_RETVAL(ret, snprintf_, buffer, 1, "%s", mkstr("Test"));
   CHECK(buffer[0] == '\0');
   PRINTING_CHECK_WITH_BUF_SIZE("H", ==, snprintf_, buffer, 2, "%s", mkstr("Hello"));
 
   DISABLE_WARNING_PUSH
   DISABLE_WARNING_PRINTF_FORMAT_OVERFLOW
-  snprintf_(buffer, 2, "%s", (const char *) NULL);
+  CAPTURE_AND_PRINT_WITH_RETVAL(ret, snprintf_, buffer, 2, "%s", (const char *) NULL);
   CHECK(!strcmp(buffer, "("));
   DISABLE_WARNING_POP
 }
