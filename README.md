@@ -183,7 +183,6 @@ Notes:
 * The `%a` specifier for hexadecimal floating-point notation (introduced in C99 and C++11) is _not_ currently supported.
 * If you want to print the percent sign (`%`, US-ASCII character 37), use "%%" in your format string.
 * The C standard library's `printf()`-style functions don't accept `float` arguments, only `double`'s; that is true for this library as well. `float`'s get converted to `double`'s.
-* There is no unsigned equivalent of the `I` specifier at the moment.
 
 #### Flags
 
