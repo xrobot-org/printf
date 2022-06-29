@@ -25,14 +25,14 @@ void putchar_(char c)
   }
 }
 
-void clear_buffer()
+void clear_buffer(void)
 {
   for(int i = 0; i < BufferSize; i++) {
     buffer[i] = '\0';
   }
 }
 
-int main()
+int main(void)
 {
 #if PRINTF_ALIAS_STANDARD_FUNCTION_NAMES
   clear_buffer();

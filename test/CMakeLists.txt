@@ -71,6 +71,9 @@ foreach(tgt ${test_targets})
 			-fverbose-asm
 			-Wunused-parameter
 		)
+		target_compile_options(${tgt} PRIVATE
+		  "$<$<COMPILE_LANGUAGE:C>:-Wstrict-prototypes>"
+		)			
 		if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 			target_compile_options(${tgt} PRIVATE -ffat-lto-objects)
 		endif()
