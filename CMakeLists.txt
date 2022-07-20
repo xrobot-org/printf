@@ -20,6 +20,7 @@ option(SUPPORT_EXPONENTIAL_SPECIFIERS         "Support exponential floating poin
 option(SUPPORT_MSVC_STYLE_INTEGER_SPECIFIERS  "Support the I + bit size integer specifiers (%I8, %I16, %I32, %I64) as in Microsoft Visual C++" ON)
 option(SUPPORT_WRITEBACK_SPECIFIER            "Support the length write-back specifier (%n)" ON)
 option(SUPPORT_LONG_LONG                      "Support long long integral types (allows for the ll length modifier and affects %p)" ON)
+option(CHECK_FOR_NUL_IN_FORMAT_SPECIFIER      "Be defensive in the undefined-behavior case of a format specifier not ending before the string ends" ON)
 
 set(ALIASING_MODES NONE HARD SOFT)
 set(ALIAS_STANDARD_FUNCTION_NAMES NONE CACHE STRING "Alias the standard library function names (printf, sprintf etc.) to the library's functions - concretely, via a macro, or not at all")
@@ -38,15 +39,15 @@ foreach(opt
 	SUPPORT_WRITEBACK_SPECIFIER
 	SUPPORT_LONG_LONG
 	ALIAS_STANDARD_FUNCTION_NAMES_SOFT
-	ALIAS_STANDARD_FUNCTION_NAMES_HARD)
+	ALIAS_STANDARD_FUNCTION_NAMES_HARD
+	CHECK_FOR_NUL_IN_FORMAT_SPECIFIER        
+        )
 	if (${${opt}})
 		set("PRINTF_${opt}" 1)
 	else()
 		set("PRINTF_${opt}" 0)
 	endif()
 endforeach()
-
-
 
 # Numeric defines which go into printf_config.h
 

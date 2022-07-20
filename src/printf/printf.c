@@ -126,6 +126,11 @@ extern "C" {
 #error "At least one non-constant Taylor expansion is necessary for the log10() calculation"
 #endif
 
+// Be extra-safe, and don't assume format specifiers are completed correctly
+// before the format string end.
+#ifndef PRINTF_CHECK_FOR_NUL_IN_FORMAT_SPECIFIER
+#define PRINTF_CHECK_FOR_NUL_IN_FORMAT_SPECIFIER 1
+#endif
 
 #define PRINTF_PREFER_DECIMAL     false
 #define PRINTF_PREFER_EXPONENTIAL true
@@ -1037,8 +1042,12 @@ static printf_flags_t parse_flags(const char** format)
 
 static inline void format_string_loop(output_gadget_t* output, const char* format, va_list args)
 {
-  // Note: The library only calls vsnprintf_impl() with output->pos being 0. However, it is
-  // possible to call this function with a non-zero pos value for some "remedial printing".
+#if PRINTF_CHECK_FOR_NUL_IN_FORMAT_SPECIFIER
+#define ADVANCE_IN_FORMAT_STRING(cptr_) do { (cptr_)++; if (!*(cptr_)) return; } while(0)
+#else
+#define ADVANCE_IN_FORMAT_STRING(cptr_) (cptr_)++
+#endif
+
 
   while (*format)
   {
@@ -1051,7 +1060,7 @@ static inline void format_string_loop(output_gadget_t* output, const char* forma
     }
     else {
       // yes, evaluate it
-      format++;
+      ADVANCE_IN_FORMAT_STRING(format);
     }
 
     printf_flags_t flags = parse_flags(&format);
@@ -1070,21 +1079,21 @@ static inline void format_string_loop(output_gadget_t* output, const char* forma
       else {
         width = (printf_size_t)w;
       }
-      format++;
+      ADVANCE_IN_FORMAT_STRING(format);
     }
 
     // evaluate precision field
     printf_size_t precision = 0U;
     if (*format == '.') {
       flags |= FLAGS_PRECISION;
-      format++;
+      ADVANCE_IN_FORMAT_STRING(format);
       if (is_digit_(*format)) {
         precision = (printf_size_t) atou_(&format);
       }
       else if (*format == '*') {
         const int precision_ = va_arg(args, int);
         precision = precision_ > 0 ? (printf_size_t) precision_ : 0U;
-        format++;
+        ADVANCE_IN_FORMAT_STRING(format);
       }
     }
 
@@ -1092,23 +1101,23 @@ static inline void format_string_loop(output_gadget_t* output, const char* forma
     switch (*format) {
 #ifdef PRINTF_SUPPORT_MSVC_STYLE_INTEGER_SPECIFIERS
       case 'I' : {
-        format++;
+        ADVANCE_IN_FORMAT_STRING(format);
         // Greedily parse for size in bits: 8, 16, 32 or 64
         switch(*format) {
           case '8':               flags |= FLAGS_INT8;
-            format++;
+            ADVANCE_IN_FORMAT_STRING(format);
             break;
           case '1':
-            format++;
-            if (*format == '6') { format++; flags |= FLAGS_INT16; }
+            ADVANCE_IN_FORMAT_STRING(format);
+          if (*format == '6') { format++; flags |= FLAGS_INT16; }
             break;
           case '3':
-            format++;
-            if (*format == '2') { format++; flags |= FLAGS_INT32; }
+            ADVANCE_IN_FORMAT_STRING(format);
+            if (*format == '2') { ADVANCE_IN_FORMAT_STRING(format); flags |= FLAGS_INT32; }
             break;
           case '6':
-            format++;
-            if (*format == '4') { format++; flags |= FLAGS_INT64; }
+            ADVANCE_IN_FORMAT_STRING(format);
+            if (*format == '4') { ADVANCE_IN_FORMAT_STRING(format); flags |= FLAGS_INT64; }
             break;
           default: break;
         }
@@ -1117,31 +1126,31 @@ static inline void format_string_loop(output_gadget_t* output, const char* forma
 #endif
       case 'l' :
         flags |= FLAGS_LONG;
-        format++;
+        ADVANCE_IN_FORMAT_STRING(format);
         if (*format == 'l') {
           flags |= FLAGS_LONG_LONG;
-          format++;
+          ADVANCE_IN_FORMAT_STRING(format);
         }
         break;
       case 'h' :
         flags |= FLAGS_SHORT;
-        format++;
+        ADVANCE_IN_FORMAT_STRING(format);
         if (*format == 'h') {
           flags |= FLAGS_CHAR;
-          format++;
+          ADVANCE_IN_FORMAT_STRING(format);
         }
         break;
       case 't' :
         flags |= (sizeof(ptrdiff_t) == sizeof(long) ? FLAGS_LONG : FLAGS_LONG_LONG);
-        format++;
+        ADVANCE_IN_FORMAT_STRING(format);
         break;
       case 'j' :
         flags |= (sizeof(intmax_t) == sizeof(long) ? FLAGS_LONG : FLAGS_LONG_LONG);
-        format++;
+        ADVANCE_IN_FORMAT_STRING(format);
         break;
       case 'z' :
         flags |= (sizeof(size_t) == sizeof(long) ? FLAGS_LONG : FLAGS_LONG_LONG);
-        format++;
+        ADVANCE_IN_FORMAT_STRING(format);
         break;
       default:
         break;
@@ -1213,9 +1222,9 @@ static inline void format_string_loop(output_gadget_t* output, const char* forma
         }
         else {
           // An unsigned specifier: u, x, X, o, b
-  
+
           flags &= ~(FLAGS_PLUS | FLAGS_SPACE);
-  
+
           if (flags & FLAGS_LONG_LONG) {
 #if PRINTF_SUPPORT_LONG_LONG
             print_integer(output, (printf_unsigned_value_t) va_arg(args, unsigned long long), false, base, precision, width, flags);
@@ -1344,26 +1353,20 @@ static inline void format_string_loop(output_gadget_t* output, const char* forma
         break;
     }
   }
+}
+
+// internal vsnprintf - used for implementing _all library functions
+static int vsnprintf_impl(output_gadget_t* output, const char* format, va_list args)
+{
+  // Note: The library only calls vsnprintf_impl() with output->pos being 0. However, it is
+  // possible to call this function with a non-zero pos value for some "remedial printing".
+  format_string_loop(output, format, args);
 
   // termination
   append_termination_with_gadget(output);
 
   // return written chars without terminating \0
   return (int)output->pos;
-}
-
-// internal vsnprintf - used for implementing _all_ library functions
-static int vsnprintf_impl(output_gadget_t* output, const char* format, va_list args)
-{
-    // Note: The library only calls vsnprintf_impl() with output->pos being 0. However, it is
-    // possible to call this function with a non-zero pos value for some "remedial printing".
-    format_string_loop(output, format, args);
-
-    // termination
-    append_termination_with_gadget(output);
-
-    // return written chars without terminating \0
-    return (int)output->pos;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
