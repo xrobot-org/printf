@@ -162,21 +162,21 @@ The following format specifiers are supported:
 
 #### Types
 
-| Type   | Output |
-|--------|--------|
-| d or i | Signed decimal integer |
-| u      | Unsigned decimal integer	|
-| b      | Unsigned binary |
-| o      | Unsigned octal |
-| x      | Unsigned hexadecimal integer (lowercase) |
-| X      | Unsigned hexadecimal integer (uppercase) |
-| f or F | Decimal floating point |
-| e or E | Scientific-notation (exponential) floating point |
-| g or G | Scientific or decimal floating point |
-| c      | Single character |
-| s      | String of characters |
-| p      | Pointer address |
-| n      | None; number of characters produced so far written to argument pointer |
+| Type       | Output                   |
+|------------|--------------------------|
+| `d` or `i` | Signed decimal integer   |
+| `u`        | Unsigned decimal integer	|
+| `b`        | Unsigned binary          |
+| `o`        | Unsigned octal           |
+| `x`        | Unsigned hexadecimal integer (lowercase) |
+| `X`        | Unsigned hexadecimal integer (uppercase) |
+| `f` or `F` | Decimal floating point   |
+| `e` or `E` | Scientific-notation (exponential) floating point |
+| `g` or `G` | Scientific or decimal floating point |
+| `c`        | Single character         |
+| `s`        | String of characters     |
+| `p`        | Pointer address          |
+| `n`        | None; number of characters produced so far written to argument pointer |
 
 Notes:
 
@@ -186,13 +186,13 @@ Notes:
 
 #### Flags
 
-| Flags | Description |
-|-------|-------------|
-| -     | Left-justify within the given field width; Right justification is the default. |
-| +     | Forces to precede the result with a plus or minus sign (+ or -) even for positive numbers.<br>By default, only negative numbers are preceded with a - sign. |
+| Flags   | Description |
+|---------|-------------|
+| `-`     | Left-justify within the given field width; Right justification is the default. |
+| `+`     | Forces to precede the result with a plus or minus sign (+ or -) even for positive numbers.<br>By default, only negative numbers are preceded with a - sign. |
 | (space) | If no sign is going to be written, a blank space is inserted before the value. |
-| #     | Used with o, b, x or X specifiers the value is preceded with 0, 0b, 0x or 0X respectively for values different than zero.<br>Used with f, F it forces the written output to contain a decimal point even if no more digits follow. By default, if no digits follow, no decimal point is written. |
-| 0     | Left-pads the number with zeros (0) instead of spaces when padding is specified (see width sub-specifier). |
+| `#`     | Used with o, b, x or X specifiers the value is preceded with 0, 0b, 0x or 0X respectively for values different than zero.<br>Used with f, F it forces the written output to contain a decimal point even if no more digits follow. By default, if no digits follow, no decimal point is written. |
+| `0`     | Left-pads the number with zeros (0) instead of spaces when padding is specified (see width sub-specifier). |
 
 
 #### Width Specifiers
@@ -200,35 +200,35 @@ Notes:
 | Width    | Description |
 |----------|-------------|
 | (number) | Minimum number of characters to be printed. If the value to be printed is shorter than this number, the result is padded with blank spaces. The value is not truncated even if the result is larger. |
-| *        | The width is not specified in the format string, but as an additional integer value argument preceding the argument that has to be formatted. |
+| `*`      | The width is not specified in the format string, but as an additional integer value argument preceding the argument that has to be formatted. |
 
 
 #### Precision Specifiers
 
-| Precision	| Description |
-|-----------|-------------|
-| .number   | For integer specifiers (d, i, o, u, x, X): precision specifies the minimum number of digits to be written. If the value to be written is shorter than this number, the result is padded with leading zeros. The value is not truncated even if the result is longer. A precision of 0 means that no character is written for the value 0.<br>For f and F specifiers: this is the number of digits to be printed after the decimal point. **By default, this is 6, and a maximum is defined when building the library**.<br>For s: this is the maximum number of characters to be printed. By default all characters are printed until the ending null character is encountered.<br>If the period is specified without an explicit value for precision, 0 is assumed. |
-| .*        | The precision is not specified in the format string, but as an additional integer value argument preceding the argument that has to be formatted. |
+| Precision   | Description |
+|-------------|-------------|
+| `.`(number) | For integer specifiers (d, i, o, u, x, X): precision specifies the minimum number of digits to be written. If the value to be written is shorter than this number, the result is padded with leading zeros. The value is not truncated even if the result is longer. A precision of 0 means that no character is written for the value 0.<br>For f and F specifiers: this is the number of digits to be printed after the decimal point. **By default, this is 6, and a maximum is defined when building the library**.<br>For s: this is the maximum number of characters to be printed. By default all characters are printed until the ending null character is encountered.<br>If the period is specified without an explicit value for precision, 0 is assumed. |
+| `.*`        | The precision is not specified in the format string, but as an additional integer value argument preceding the argument that has to be formatted. |
 
 
 #### Length modifiers
 
 The length sub-specifier modifies the length of the data type.
 
-| Length | With `d`, `i`             | With `u`,`o`,`x`, `X`  | Support enabled by...                 |
-|--------|---------------------------|------------------------|---------------------------------------|
-| (none) | int                       | unsigned int           |                                       |
-| hh     | signed char               | unsigned char          |                                       |
-| h      | short int                 | unsigned short int     |                                       |
-| l      | long int                  | unsigned long int      |                                       |
-| ll     | long long int             | unsigned long long int | PRINTF_SUPPORT_LONG_LONG              |
-| j      | intmax_t                  | uintmax_t              |                                       |
-| z      | signed version of size_t  | size_t                 |                                       |
-| t      | ptrdiff_t                 | ptrdiff_t              |                                       |
-| I8     | int8_t                    | uint8_t                | SUPPORT_MSVC_STYLE_INTEGER_SPECIFIERS |
-| I16    | int16_t                   | uint16_t               | SUPPORT_MSVC_STYLE_INTEGER_SPECIFIERS |
-| I32    | int32_t                   | uint32_t               | SUPPORT_MSVC_STYLE_INTEGER_SPECIFIERS |
-| I64    | int64_t                   | uint64_t               | SUPPORT_MSVC_STYLE_INTEGER_SPECIFIERS |
+| Length   | With `d`, `i`               | With `u`,`o`,`x`, `X`    | Support enabled by...                 |
+|----------|-----------------------------|--------------------------|---------------------------------------|
+| (none)   | `int`                       | `unsigned int`           |                                       |
+| `hh`     | `signed char`               | `unsigned char`          |                                       |
+| `h`      | `short int`                 | `unsigned short int`     |                                       |
+| `l`      | `long int`                  | `unsigned long int`      |                                       |
+| `ll`     | `long long int`             | `unsigned long long int` | PRINTF_SUPPORT_LONG_LONG              |
+| `j`      | `intmax_t`                  | `uintmax_t`              |                                       |
+| `z`      | signed version of `size_t`  | `size_t`                 |                                       |
+| `t`      | `ptrdiff_t`                 | `ptrdiff_t`              |                                       |
+| `I8`     | `int8_t`                    | `uint8_t`                | SUPPORT_MSVC_STYLE_INTEGER_SPECIFIERS |
+| `I16`    | `int16_t`                   | `uint16_t`               | SUPPORT_MSVC_STYLE_INTEGER_SPECIFIERS |
+| `I32`    | `int32_t`                   | `uint32_t`               | SUPPORT_MSVC_STYLE_INTEGER_SPECIFIERS |
+| `I64`    | `int64_t`                   | `uint64_t`               | SUPPORT_MSVC_STYLE_INTEGER_SPECIFIERS |
 
 
 Notes:
@@ -236,7 +236,7 @@ Notes:
 * The `L` modifier, for `long double`, is not currently supported.
 * A `"%zd"` or `"%zi"` takes a signed integer of the same size as `size_t`. 
 * The implementation currently assumes each of `intmax_t`, signed `size_t`, and `ptrdiff_t` has the same size as `long int` or as `long long int`. If this is not the case for your platform, please open an issue.
-* The `Ixx` length modifiers are not in the C (nor C++) standard, but are somewhat popular, as it makes it easier to handle integer types of specific size. One must specify the argument size in bits immediately after the `I`. The printing is "integer-promotion-safe", i.e. the fact that an `int8_t` may actually be passed in promoted into a larger `int` will not prevent it from being printed using its origina value.
+* The `Ixx` length modifiers are not in the C (nor C++) standard, but are somewhat popular, as it makes it easier to handle integer types of specific size. One must specify the argument size in bits immediately after the `I`. The printing is "integer-promotion-safe", i.e. the fact that an `int8_t` may actually be passed in promoted into a larger `int` will not prevent it from being printed using its original value.
 
 ### Return Value
 
