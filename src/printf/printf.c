@@ -1051,17 +1051,14 @@ static inline void format_string_loop(output_gadget_t* output, const char* forma
 
   while (*format)
   {
-    // format specifier?  %[flags][width][.precision][length]
     if (*format != '%') {
-      // no
+      // A regular content character
       putchar_via_gadget(output, *format);
       format++;
       continue;
     }
-    else {
-      // yes, evaluate it
-      ADVANCE_IN_FORMAT_STRING(format);
-    }
+    // We're parsing a format specifier: %[flags][width][.precision][length]
+    ADVANCE_IN_FORMAT_STRING(format);
 
     printf_flags_t flags = parse_flags(&format);
 
