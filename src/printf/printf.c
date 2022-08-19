@@ -1035,10 +1035,7 @@ static printf_flags_t parse_flags(const char** format)
   } while (true);
 }
 
-// internal vsnprintf - used for implementing _all library functions
-// Note: We don't like the C standard's parameter names, so using more informative parameter names
-// here instead.
-static int vsnprintf_impl(output_gadget_t* output, const char* format, va_list args)
+static inline void format_string_loop(output_gadget_t* output, const char* format, va_list args)
 {
   // Note: The library only calls vsnprintf_impl() with output->pos being 0. However, it is
   // possible to call this function with a non-zero pos value for some "remedial printing".
@@ -1355,6 +1352,19 @@ static int vsnprintf_impl(output_gadget_t* output, const char* format, va_list a
   return (int)output->pos;
 }
 
+// internal vsnprintf - used for implementing _all_ library functions
+static int vsnprintf_impl(output_gadget_t* output, const char* format, va_list args)
+{
+    // Note: The library only calls vsnprintf_impl() with output->pos being 0. However, it is
+    // possible to call this function with a non-zero pos value for some "remedial printing".
+    format_string_loop(output, format, args);
+
+    // termination
+    append_termination_with_gadget(output);
+
+    // return written chars without terminating \0
+    return (int)output->pos;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
