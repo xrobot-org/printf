@@ -34,6 +34,16 @@
 #endif
 #include <printf/printf.c>
 
+#if PRINTF_ALIAS_STANDARD_FUNCTION_NAMES_HARD
+// Disable aliasing so as not to interfere with the standard library headers
+# undef printf
+# undef sprintf_
+# undef vsprintf_
+# undef snprintf_
+# undef vsnprintf_
+# undef vprintf_
+#endif
+
 // use the 'catch' test framework
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
@@ -54,6 +64,17 @@ typedef SSIZE_T ssize_t;
 #else
 // Let's just cross our fingers and hope `ssize_t` is defined.
 #endif
+
+#if PRINTF_ALIAS_STANDARD_FUNCTION_NAMES_SOFT
+// Re-enable aliasing
+# define printf     printf_
+# define sprintf    sprintf_
+# define vsprintf   vsprintf_
+# define snprintf   snprintf_
+# define vsnprintf  vsnprintf_
+# define vprintf    vprintf_
+#endif
+
 
 #define CAPTURE_AND_PRINT(printer_, ...)                  \
 do {                                                      \
