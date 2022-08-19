@@ -79,6 +79,10 @@ if (BUILD_STATIC_LIBRARY)
 else()
 	add_library(printf SHARED)
 endif()
+
+add_library("printf::printf" ALIAS printf)
+
+
 set(GENERATED_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/include")
 configure_file("printf_config.h.in" "${GENERATED_INCLUDE_DIR}/printf_config.h" @ONLY)
 target_sources(printf PRIVATE src/printf/printf.c "${GENERATED_INCLUDE_DIR}/printf_config.h" src/printf/printf.h)
@@ -99,8 +103,8 @@ target_include_directories(
 )
 
 set_target_properties(printf PROPERTIES
-         LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib
-         ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+	LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib
+	ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
 if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
 	target_compile_options(printf PRIVATE /W4)
@@ -149,6 +153,9 @@ endif()
 
 include(GNUInstallDirs)
 
+# Note: No need for a config.cmake file for setting dependencies - as there
+# are no dependencies; this library is self-contained
+
 install(
 	TARGETS printf
 	EXPORT printf_export
@@ -163,11 +170,17 @@ install(
 	DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/printf"
 )
 
+export(
+	EXPORT printf_export
+	NAMESPACE "printf::"
+	FILE "${PROJECT_BINARY_DIR}/printf-targets.cmake"
+)
+
 install(
 	EXPORT printf_export
+	FILE "printf-targets.cmake"
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/printf"
 	NAMESPACE "printf::"
-	FILE "printf-config.cmake"
 )
 
 include(CMakePackageConfigHelpers)
@@ -182,6 +195,3 @@ install(
 	FILES "${CMAKE_CURRENT_BINARY_DIR}/printf-config-version.cmake"
 	DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/printf"
 )
-
-
-
