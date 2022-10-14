@@ -37,26 +37,22 @@
  * THE SOFTWARE.
  */
 
-#ifdef __cplusplus
-#include <cstdint>
-#include <climits>
-extern "C" {
-#else
-#include <stdbool.h>
-#include <stdint.h>
-#include <limits.h>
-#endif // __cplusplus
-
 // Define this globally (e.g. gcc -DPRINTF_INCLUDE_CONFIG_H=1 ...) to include the
 // printf_config.h header file
 #if PRINTF_INCLUDE_CONFIG_H
 #include "printf_config.h"
 #endif
 
-#include <stdbool.h>
-#include <stdint.h>
-
 #include <printf/printf.h>
+
+#ifdef __cplusplus
+#include <cstdint>
+#include <climits>
+#else
+#include <stdint.h>
+#include <limits.h>
+#include <stdbool.h>
+#endif // __cplusplus
 
 #if PRINTF_ALIAS_STANDARD_FUNCTION_NAMES
 # define printf_    printf
@@ -1427,7 +1423,3 @@ int fctprintf(void (*out)(char c, void* extra_arg), void* extra_arg, const char*
   return ret;
 }
 
-
-#ifdef __cplusplus
-} // extern "C"
-#endif
