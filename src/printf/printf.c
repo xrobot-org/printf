@@ -636,15 +636,7 @@ static double apply_scaling(double num, struct scaling_factor normalization)
 
 static double unapply_scaling(double normalized, struct scaling_factor normalization)
 {
-#ifdef __GNUC__
-// accounting for a static analysis bug in GCC 6.x and earlier
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif
   return normalization.multiply ? normalized / normalization.raw_factor : normalized * normalization.raw_factor;
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
 }
 
 static struct scaling_factor update_normalization(struct scaling_factor sf, double extra_multiplicative_factor)
