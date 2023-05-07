@@ -1,6 +1,10 @@
 // This file is to be included into either test_suite.cpp or another
 // variant of the test suite. It is _not_ self contained in any way
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
 PRINTF_TEST_CASE(space_flag)
 {
@@ -1061,3 +1065,7 @@ PRINTF_TEST_CASE(extremal_unsigned_integer_values)
   PRINTING_CHECK(expected,                  ==, sprintf_, buffer, "%llu", std::numeric_limits<long long unsigned>::max());
 #endif
 }
+
+#ifdef __clang__
+#    pragma clang diagnostic pop
+#endif
