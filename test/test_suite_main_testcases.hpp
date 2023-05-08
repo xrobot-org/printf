@@ -4,6 +4,9 @@
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
 PRINTF_TEST_CASE(space_flag)
@@ -1068,4 +1071,6 @@ PRINTF_TEST_CASE(extremal_unsigned_integer_values)
 
 #ifdef __clang__
 #    pragma clang diagnostic pop
+#elif defined(__GNUC__)
+#    pragma GCC diagnostic pop
 #endif
