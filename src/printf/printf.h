@@ -40,13 +40,11 @@
 #define PRINTF_H_
 
 #ifdef __cplusplus
-# include <cstdarg>
-# include <cstddef>
 extern "C" {
-#else
+#endif
+
 # include <stdarg.h>
 # include <stddef.h>
-#endif
 
 #ifdef __GNUC__
 # if ((__GNUC__ == 4 && __GNUC_MINOR__>= 4) || __GNUC__ > 4)
@@ -73,28 +71,6 @@ __attribute__((format(printf, (one_based_format_index), (first_arg))))
 #ifndef PRINTF_VISIBILITY
 #define PRINTF_VISIBILITY
 #endif
-
-/**
- * Prints/send a single character to some opaque output entity
- *
- * @note This function is not implemented by the library, only declared; you must provide an
- * implementation if you wish to use the @ref printf / @ref vprintf function (and possibly
- * for linking against the library, if your toolchain does not support discarding unused functions)
- *
- * @note The output could be as simple as a wrapper for the `write()` system call on a Unix-like
- * system, or even libc's @ref putchar , for replicating actual functionality of libc's @ref printf
- * function; but on an embedded system it may involve interaction with a special output device,
- * like a UART, etc.
- *
- * @note in libc's @ref putchar, the parameter type is an int; this was intended to support the
- * representation of either a proper character or EOF in a variable - but this is really not
- * meaningful to pass into @ref putchar and is discouraged today. See further discussion in:
- * @link https://stackoverflow.com/q/17452847/1593077
- *
- * @param c the single character to print
- */
-PRINTF_VISIBILITY
-void putchar_(char c);
 
 
 /**

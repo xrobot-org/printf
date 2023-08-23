@@ -362,14 +362,6 @@ static inline void append_termination_with_gadget(output_gadget_t* gadget)
   gadget->buffer[null_char_pos] = '\0';
 }
 
-// We can't use putchar_ as is, since our output gadget
-// only takes pointers to functions with an extra argument
-static inline void putchar_wrapper(char c, void* unused)
-{
-  (void) unused;
-  putchar_(c);
-}
-
 static inline output_gadget_t discarding_gadget(void)
 {
   output_gadget_t gadget;
@@ -400,11 +392,6 @@ static inline output_gadget_t function_gadget(void (*function)(char, void*), voi
   result.extra_function_arg = extra_arg;
   result.max_chars = PRINTF_MAX_POSSIBLE_BUFFER_SIZE;
   return result;
-}
-
-static inline output_gadget_t extern_putchar_gadget(void)
-{
-  return function_gadget(putchar_wrapper, NULL);
 }
 
 // internal secure strlen
@@ -1367,12 +1354,6 @@ static int vsnprintf_impl(output_gadget_t* output, const char* format, va_list a
 
 ///////////////////////////////////////////////////////////////////////////////
 
-int vprintf_(const char* format, va_list arg)
-{
-  output_gadget_t gadget = extern_putchar_gadget();
-  return vsnprintf_impl(&gadget, format, arg);
-}
-
 int vsnprintf(char* s, size_t n, const char* format, va_list arg)
 {
   output_gadget_t gadget = buffer_gadget(s, n);
@@ -1388,15 +1369,6 @@ int vfctprintf(void (*out)(char c, void* extra_arg), void* extra_arg, const char
 {
   output_gadget_t gadget = function_gadget(out, extra_arg);
   return vsnprintf_impl(&gadget, format, arg);
-}
-
-int printf_(const char* format, ...)
-{
-  va_list args;
-  va_start(args, format);
-  const int ret = vprintf_(format, args);
-  va_end(args);
-  return ret;
 }
 
 int sprintf(char* s, const char* format, ...)
