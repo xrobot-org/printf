@@ -1373,15 +1373,15 @@ int vprintf_(const char* format, va_list arg)
   return vsnprintf_impl(&gadget, format, arg);
 }
 
-int vsnprintf_(char* s, size_t n, const char* format, va_list arg)
+int vsnprintf(char* s, size_t n, const char* format, va_list arg)
 {
   output_gadget_t gadget = buffer_gadget(s, n);
   return vsnprintf_impl(&gadget, format, arg);
 }
 
-int vsprintf_(char* s, const char* format, va_list arg)
+int vsprintf(char* s, const char* format, va_list arg)
 {
-  return vsnprintf_(s, PRINTF_MAX_POSSIBLE_BUFFER_SIZE, format, arg);
+  return vsnprintf(s, PRINTF_MAX_POSSIBLE_BUFFER_SIZE, format, arg);
 }
 
 int vfctprintf(void (*out)(char c, void* extra_arg), void* extra_arg, const char* format, va_list arg)
@@ -1399,20 +1399,20 @@ int printf_(const char* format, ...)
   return ret;
 }
 
-int sprintf_(char* s, const char* format, ...)
+int sprintf(char* s, const char* format, ...)
 {
   va_list args;
   va_start(args, format);
-  const int ret = vsprintf_(s, format, args);
+  const int ret = vsprintf(s, format, args);
   va_end(args);
   return ret;
 }
 
-int snprintf_(char* s, size_t n, const char* format, ...)
+int snprintf(char* s, size_t n, const char* format, ...)
 {
   va_list args;
   va_start(args, format);
-  const int ret = vsnprintf_(s, n, format, args);
+  const int ret = vsnprintf(s, n, format, args);
   va_end(args);
   return ret;
 }

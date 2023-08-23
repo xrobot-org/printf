@@ -66,15 +66,6 @@ __attribute__((format(printf, (one_based_format_index), (first_arg))))
 #define PRINTF_ALIAS_STANDARD_FUNCTION_NAMES 0
 #endif
 
-#if PRINTF_ALIAS_STANDARD_FUNCTION_NAMES_HARD
-# define printf_    printf
-# define sprintf_   sprintf
-# define vsprintf_  vsprintf
-# define snprintf_  snprintf
-# define vsnprintf_ vsnprintf
-# define vprintf_   vprintf
-#endif
-
 // If you want to include this implementation file directly rather than
 // link against, this will let you control the functions' visibility,
 // e.g. make them static so as not to clash with other objects also
@@ -107,26 +98,6 @@ void putchar_(char c);
 
 
 /**
- * An implementation of the C standard's printf/vprintf
- *
- * @note you must implement a @ref putchar_ function for using this function - it invokes @ref putchar_
- * rather than directly performing any I/O (which insulates it from any dependence on the operating system
- * and external libraries).
- *
- * @param format A string specifying the format of the output, with %-marked specifiers of how to interpret
- * additional arguments.
- * @param arg Additional arguments to the function, one for each %-specifier in @p format string
- * @return The number of characters written into @p s, not counting the terminating null character
- */
- ///@{
-PRINTF_VISIBILITY
-int printf_(const char* format, ...) ATTR_PRINTF(1, 2);
-PRINTF_VISIBILITY
-int vprintf_(const char* format, va_list arg) ATTR_VPRINTF(1);
-///@}
-
-
-/**
  * An implementation of the C standard's sprintf/vsprintf
  *
  * @note For security considerations (the potential for exceeding the buffer bounds), please consider using
@@ -141,9 +112,9 @@ int vprintf_(const char* format, va_list arg) ATTR_VPRINTF(1);
  */
 ///@{
 PRINTF_VISIBILITY
-int  sprintf_(char* s, const char* format, ...) ATTR_PRINTF(2, 3);
+int sprintf(char* s, const char* format, ...) ATTR_PRINTF(2, 3);
 PRINTF_VISIBILITY
-int vsprintf_(char* s, const char* format, va_list arg) ATTR_VPRINTF(2);
+int vsprintf(char* s, const char* format, va_list arg) ATTR_VPRINTF(2);
 ///@}
 
 
@@ -164,9 +135,9 @@ int vsprintf_(char* s, const char* format, va_list arg) ATTR_VPRINTF(2);
  */
 ///@{
 PRINTF_VISIBILITY
-int  snprintf_(char* s, size_t count, const char* format, ...) ATTR_PRINTF(3, 4);
+int snprintf(char* s, size_t count, const char* format, ...) ATTR_PRINTF(3, 4);
 PRINTF_VISIBILITY
-int vsnprintf_(char* s, size_t count, const char* format, va_list arg) ATTR_VPRINTF(3);
+int vsnprintf(char* s, size_t count, const char* format, va_list arg) ATTR_VPRINTF(3);
 ///@}
 
 
@@ -192,24 +163,6 @@ int vfctprintf(void (*out)(char c, void* extra_arg), void* extra_arg, const char
 
 #ifdef __cplusplus
 } // extern "C"
-#endif
-
-#if PRINTF_ALIAS_STANDARD_FUNCTION_NAMES_HARD
-# undef printf_
-# undef sprintf_
-# undef vsprintf_
-# undef snprintf_
-# undef vsnprintf_
-# undef vprintf_
-#else
-#if PRINTF_ALIAS_STANDARD_FUNCTION_NAMES_SOFT
-# define printf     printf_
-# define sprintf    sprintf_
-# define vsprintf   vsprintf_
-# define snprintf   snprintf_
-# define vsnprintf  vsnprintf_
-# define vprintf    vprintf_
-#endif
 #endif
 
 #endif  // PRINTF_H_
